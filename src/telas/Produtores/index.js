@@ -1,20 +1,37 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FlatList, Text, StyleSheet } from 'react-native';
 
 import Produtor from './componentes/Produtor';
 import Topo from './componentes/Topo';
 import useProdutores from '../../hooks/useProdutores';
 import useTextos from '../../hooks/useTextos';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 export default function Produtores({ melhoresProdutores }) {
+  const route = useRoute();
   const navigation = useNavigation();
+  const [ exibeMsg, setExibeMsg ] = useState(false);
   const lista = useProdutores(melhoresProdutores);
-  const { tituloProdutores } = useTextos();
+  const { tituloProdutores, mensagemCompra } = useTextos();
+  const nomeCesta = route.params?.compra.nome;
+  const timeCompra = route.params?.compra.timestamp;
+
+  const msgCompleta = mensagemCompra?.replace("$nome", nomeCesta);
+
+  useEffect(() => {
+    setExibeMsg(!!nomeCesta);
+    let timeout;
+    if (nomeCesta) {
+      timeout = setTimeout(() => {
+        setExibeMsg(false);
+      }, 3000);
+    }
+  }, [timeCompra]);
 
   const TopoLista = () => {
     return <>
       <Topo melhoresProdutores={melhoresProdutores} />
+      {exibeMsg && <Text style={estilos.compra}>{msgCompleta}</Text>}
       <Text style={estilos.titulo}>{tituloProdutores}</Text>
     </>
   }
@@ -22,8 +39,8 @@ export default function Produtores({ melhoresProdutores }) {
   return <FlatList
     data={lista}
     renderItem={
-      ({ item }) => <Produtor {...item} 
-      aoPressionar={ () =>{ navigation.navigate('Produtor', item) }} />
+      ({ item }) => <Produtor {...item}
+        aoPressionar={() => { navigation.navigate('Produtor', item) }} />
     }
     keyExtractor={({ nome }) => nome}
     ListHeaderComponent={TopoLista}
@@ -41,5 +58,12 @@ const estilos = StyleSheet.create({
     marginTop: 16,
     fontWeight: 'bold',
     color: '#464646',
+  },
+  compra: {
+    backgroundColor: '#eaf5f3',
+    padding: 16,
+    color: "#464646",
+    fontSize: 16,
+    lineHeight: 26
   }
 })
