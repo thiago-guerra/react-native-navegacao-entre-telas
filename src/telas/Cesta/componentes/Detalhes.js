@@ -8,7 +8,8 @@ import { useNavigation } from '@react-navigation/native';
 export default function Detalhes({ nome, produtor, descricao, preco }) {
   const navigation = useNavigation();
   const { botaoComprar } = useTextos();
-
+  console.log(produtor.nome);
+  
   return <>
     <Texto style={estilos.nome}>{nome}</Texto>
     <View style={estilos.fazenda}>
@@ -20,7 +21,7 @@ export default function Detalhes({ nome, produtor, descricao, preco }) {
 
     <TouchableOpacity
       style={estilos.botao}
-      onPress={() => navigation.navigate('HomeScreen', { compra: { nome, timestamp: + new Date() } })}>
+      onPress={() => navigation.navigate('CompraRealizada', { produtor })}>
       <Texto style={estilos.textoBotao}>{botaoComprar}</Texto>
     </TouchableOpacity>
   </>

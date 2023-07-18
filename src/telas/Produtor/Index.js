@@ -12,7 +12,8 @@ export default function Produtor() {
     const route = useRoute();
     const { tituloProdutor, tituloCestas } = useTextos();
     const { nome, imagem, cestas } = route.params;
-
+    console.log(cestas);
+   
     const TopoLista = () => {
         return <>
             <Topo titulo={tituloProdutor} imagem={topoImg} altura={150}></Topo>
